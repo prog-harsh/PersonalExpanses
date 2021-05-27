@@ -4,17 +4,28 @@ import './Models/transtion.dart';
 import 'Widgets/transaction_list.dart';
 
 void main() {
-  runApp(
-    MaterialApp(home: MyApp()),
-  );
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+      ),
+      home: MyHome(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class MyHome extends StatefulWidget {
+  @override
+  _MyHomeState createState() => _MyHomeState();
+}
+
+class _MyHomeState extends State<MyHome> {
   void _startNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
         context: ctx,
@@ -24,13 +35,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   final List<Transtion> _userTransactions = [
-    Transtion(
-        id: 't1', amount: 400.40, date: DateTime.now(), title: 'New Shoes'),
-    Transtion(
-        id: 't2',
-        amount: 700.80,
-        date: DateTime.now(),
-        title: 'Weekly Groceries')
+    // Transtion(
+    //     id: 't1', amount: 400.40, date: DateTime.now(), title: 'New Shoes'),
+    // Transtion(
+    //     id: 't2',
+    //     amount: 700.80,
+    //     date: DateTime.now(),
+    //     title: 'Weekly Groceries')
   ];
   void _addNewTransaction(String title, double amount) {
     final newTx = Transtion(
@@ -54,7 +65,6 @@ class _MyAppState extends State<MyApp> {
                 Icons.add,
               ))
         ],
-        backgroundColor: Colors.deepPurple,
         title: Text('Flutter App'),
       ),
       body: SingleChildScrollView(
@@ -73,6 +83,7 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         child: Icon(
