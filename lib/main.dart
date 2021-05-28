@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './Widgets/new_transaction.dart';
+import './Widgets/chart.dart';
 import './Models/transtion.dart';
 import 'Widgets/transaction_list.dart';
 
@@ -12,6 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        textTheme: TextTheme(
+          subtitle2: TextStyle(fontSize: 13, color: Colors.grey),
+          headline1: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
+        ),
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
       ),
@@ -43,11 +49,20 @@ class _MyHomeState extends State<MyHome> {
     //     date: DateTime.now(),
     //     title: 'Weekly Groceries')
   ];
-  void _addNewTransaction(String title, double amount) {
+
+  List<Transtion> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
+
+  void _addNewTransaction(String title, double amount, DateTime chooseDate) {
     final newTx = Transtion(
         id: DateTime.now().toString(),
         amount: amount,
-        date: DateTime.now(),
+        date: chooseDate,
         title: title);
     setState(() {
       _userTransactions.add(newTx);
@@ -73,9 +88,7 @@ class _MyHomeState extends State<MyHome> {
             // ----> Chart <----
             Container(
               width: double.infinity,
-              child: Card(
-                child: Text('---Development pending for chart section----'),
-              ),
+              child: Chart(_recentTransactions),
             ),
             // -----end Chart
             //------> Text Fields and <Button ----

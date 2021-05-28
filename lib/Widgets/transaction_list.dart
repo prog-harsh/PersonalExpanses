@@ -9,7 +9,7 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 300,
+        height: 380,
         //height: MediaQuery.of(context).size.height * 0.7,
         child: tx.isEmpty
             ? Column(
@@ -28,46 +28,28 @@ class TransactionList extends StatelessWidget {
                 itemCount: tx.length,
                 itemBuilder: (context, index) => Card(
                       elevation: 5,
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.deepPurple, width: 2)),
-                            child: Text(
-                              '₹${tx[index].amount}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.deepPurple),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 5),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: FittedBox(
+                                  child: Text('₹${tx[index].amount}')),
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                tx[index].title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                DateFormat.yMMMd().format(tx[index].date),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                    fontSize: 13),
-                              ),
-                            ],
-                          )
-                        ],
+                          title: Text(
+                            tx[index].title,
+                            style: Theme.of(context).textTheme.headline1,
+                          ),
+                          subtitle: Text(
+                            DateFormat.yMMMd().format(tx[index].date),
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                        ),
                       ),
                     )));
   }
