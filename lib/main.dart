@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import './Widgets/new_transaction.dart';
+import './Widgets/about_me.dart';
 import './Widgets/chart.dart';
 import './Models/transtion.dart';
 import 'Widgets/transaction_list.dart';
@@ -11,7 +13,10 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: TextTheme(
           subtitle2: TextStyle(fontSize: 13, color: Colors.grey),
@@ -40,15 +45,13 @@ class _MyHomeState extends State<MyHome> {
         });
   }
 
-  final List<Transtion> _userTransactions = [
-    // Transtion(
-    //     id: 't1', amount: 400.40, date: DateTime.now(), title: 'New Shoes'),
-    // Transtion(
-    //     id: 't2',
-    //     amount: 700.80,
-    //     date: DateTime.now(),
-    //     title: 'Weekly Groceries')
-  ];
+  final List<Transtion> _userTransactions = [];
+
+  void _deleteTransaction(int index) {
+    setState(() {
+      _userTransactions.removeAt(index);
+    });
+  }
 
   List<Transtion> get _recentTransactions {
     return _userTransactions.where((tx) {
@@ -69,41 +72,64 @@ class _MyHomeState extends State<MyHome> {
     });
   }
 
+  bool isAbout = false;
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      actions: [
+        isAbout
+            ? Text('')
+            : IconButton(
+                onPressed: () => _startNewTransaction(context),
+                icon: Icon(
+                  Icons.add,
+                )),
+        IconButton(
+            onPressed: () {
+              setState(() {
+                isAbout == false ? isAbout = true : isAbout = false;
+              });
+            },
+            icon: !isAbout ? Icon(Icons.person) : Icon(Icons.list_alt_outlined))
+      ],
+      title: Text('Personal Expenses'),
+    );
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () => _startNewTransaction(context),
-              icon: Icon(
-                Icons.add,
-              ))
-        ],
-        title: Text('Flutter App'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // ----> Chart <----
-            Container(
-              width: double.infinity,
-              child: Chart(_recentTransactions),
+      appBar: appBar,
+      body: isAbout == true
+          ? AboutMe()
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  // ----> Chart <----
+                  Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.35,
+                    child: Chart(_recentTransactions),
+                  ),
+                  Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.65,
+                    child:
+                        TransactionList(_userTransactions, _deleteTransaction),
+                  ),
+                ],
+              ),
             ),
-            // -----end Chart
-            //------> Text Fields and <Button ----
-            TransactionList(_userTransactions),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        elevation: 10,
-        child: Icon(
-          Icons.add,
-        ),
-        onPressed: () => _startNewTransaction(context),
-      ),
+      //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: isAbout
+          ? null
+          : FloatingActionButton(
+              elevation: 10,
+              child: Icon(
+                Icons.add,
+              ),
+              onPressed: () => isAbout ? null : _startNewTransaction(context),
+            ),
     );
   }
 }
